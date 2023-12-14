@@ -25,7 +25,7 @@ import java.util.Properties;
 @Data
 @Configuration
 @Component
-@PropertySource(factory = YamlPropertySourceFactory.class, value = {"guang.yml","klarna.yml"})
+@PropertySource(factory = YamlPropertySourceFactory.class, value = {"testerhome.yml"})
 //@PropertySource(factory = YamlPropertySourceFactory.class, value = {"interface_*.yml"})
 //@PropertySource(factory = YamlPropertySourceFactory.class, value = {"request-copy.yml"},name = "b" ,ignoreResourceNotFound = true)
 @ConfigurationProperties(prefix = "api", ignoreInvalidFields = true, ignoreUnknownFields = true)

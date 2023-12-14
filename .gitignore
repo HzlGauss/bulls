@@ -32,8 +32,7 @@ build/
 /log/
 /logs/
 example.*
-/quantum.log
-/quantum.log.*
+/*.log
 allure-results
 test-output
 .DS_Store

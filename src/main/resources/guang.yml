@@ -1,0 +1,29 @@
+api:
+  globalVariables:
+    - UA: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
+  pioneers:
+    - name: testerhome登录
+      id: testerhomeLogin
+      priority: 1
+      path: https://testerhome.com/account/sign_in
+      method: post
+      headers: >-
+        \{"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"$UA","x-requested-with":"XMLHttpRequest",
+        "cookie":"user_id=eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1UVTJOamM9IiwiZXhwIjpudWxsLCJwdXIiOiJjb29raWUudXNlcl9pZCJ9fQ%3D%3D--43f5d4f117b5459e67c85cc6c569820abb1e6068; _homeland_session=Y2ljEAtdhRcbEHaTSSHMb3%2FUyn0aLrFrHoEP8QVjVq%2BvXMCEi9n57WDgHBw40L%2Bo%2Fghe148%2B%2B429DbYDWNAiC4FBFYFnEghtzkQWPpKsOm21DZQkUDLvYqr4Z2ylpkiGHqjpppkhw0LLke61psEh7ZKQte3Ia3TTzTSu9ifDtHEl9FBlZUXNgwi%2F5kscioZqkobTyJpCGp5M4mSrLiunIZUHbgm05AuWa5%2Bu2TwgsxOfpdAumg6Q0SoT7ipMLaGaprobuP0Kj2q5ZH4CKqG7fb%2FU0WwzsTgTCtMXaWLz5WYHizGKRD5CWysSMseGn5I%3D--5LouY27EpiVkGarr--tpTXhgdFShw4Qyn6sThkpg%3D%3D",
+        "x-csrf-token":"zr6fgSyPS5nyqcwGdzD7R6T51aAK6L9Dv42Lao0CSPZo4jEn3pT5fNN2eTk84VdmqhzQasF+sdHQrvvxsLYSmg=="\}
+      parameters: user[login]=redspark&user[password]=3889684th&user[remember_me]=0&user[remember_me]=1&commit=登录
+      extractors: \[{"name":"token","value":"cookies"}\]
+  requests:
+    - name: 读帖子
+      id:  topics
+      path: https://testerhome.com/topics/38484
+      method: get
+      headers: >-
+        \{"User-Agent":"$UA","Content-Type":"application/x-www-form-urlencoded","cookie":"$token","x-requested-with":"XMLHttpRequest","x-csrf-token":"r3E8899sEAEnqST2dmtIEluqG5C/nL/Rwp2l4ITtNDU3XpF4eULhClMRoWweMt6XWSmBn2H8fmPRas+CVkA/BA=="\}
+    - name: 点赞
+      id:  likes
+      path: https://testerhome.com/likes
+      method: post
+      headers: >-
+        \{"User-Agent":"$UA","Content-Type":"application/x-www-form-urlencoded","cookie":"$token","x-requested-with":"XMLHttpRequest","x-csrf-token":"r3E8899sEAEnqST2dmtIEluqG5C/nL/Rwp2l4ITtNDU3XpF4eULhClMRoWweMt6XWSmBn2H8fmPRas+CVkA/BA=="\}
+      parameters: type=Topic&id=38451

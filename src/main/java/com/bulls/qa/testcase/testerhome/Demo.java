@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Reporter;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -28,10 +29,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 @ContextConfiguration(classes = SConfig.class)
-@Listeners(CustomListener.class)
+//@Listeners(CustomListener.class)
 public class Demo extends AbstractTestNGSpringContextTests {
 
-    @Test(enabled = true, description = "流量文字→点赞")
+    @Test(enabled = true, description = "打开帖子详情页→点赞")
     public void test() {
         log.info("test start");
         //请求实例1
@@ -55,18 +56,21 @@ public class Demo extends AbstractTestNGSpringContextTests {
             request.addHeader("x-csrf-token",x_csrf_token);
         }
         response = request.doRequest();
+        assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).as("返回状态码校验");
     }
 
     //参数化实例1
     @Test(enabled = true, description = "参数化demo,方法", dataProvider = "idList")
     public void dataProviderTest(String id, int type) {
         log.info("id:{},type:{}",id,type);
+        assertThat(1+1>2).isTrue().as("断言失败举例");
     }
 
     //参数化实例2
     @Test(enabled = true, description = "参数化demo,excel", dataProvider = "ids")
     public void dataProviderTest2(String id, String type) {
         log.info("id:{},type:{}",id,type);
+        assertThat(1+1==2).isTrue().as("断言举例");
     }
 
     @DataProvider(name = "idList")

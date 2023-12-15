@@ -21,6 +21,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.Test;
+import org.testng.Reporter;
 
 import java.io.File;
 import java.io.IOException;
@@ -456,18 +457,23 @@ public class Request {
                 request = request.params(this.parameter);
             }
         }
-        logger.info("name:{}, id:{},发送请求：url:{}", requestConfig.getName(), requestConfig.getId(), this.path);
+        String requestInfo = String.format("[接口请求信息] id:%s,name:%s,url:%s", requestConfig.getId(),
+                requestConfig.getName(), this.path);
+        logger.info(requestInfo);
+        Reporter.log(requestInfo);
         if (this.headers != null) {
             logger.info("请求头:{}", this.headers);
         }
         if (this.cookies != null) {
             logger.info("请求cookies:{}", this.cookies);
         }
-        if (this.parameter != null) {
+        if (this.parameter != null && this.parameter.size() > 0) {
             logger.info("请求参数:{}", this.parameter);
+            Reporter.log("请求参数:" + this.parameter);
         }
         if (this.tmpParameter != null && this.tmpParameter.size() > 0) {
             logger.info("请求参数:{}", this.tmpParameter);
+            Reporter.log("请求参数:" + this.tmpParameter);
         }
         boolean isTestMethodCalled = isTestMethodCalled();
         if (isTestMethodCalled) {
@@ -495,6 +501,8 @@ public class Request {
             response = request(request);
         }
         logger.info("name:{}, id:{},请求结果，状态码：{}；内容：{}", requestConfig.getName(), requestConfig.getId(), response.statusCode(), response.asString());
+        String responseInfo = String.format("[接口返回信息] id:%s,name:%s, 返回状态码:%s", requestConfig.getId(), requestConfig.getName(), response.statusCode());
+        Reporter.log(responseInfo);
         if (response != null && response.getHeaders() != null) {
             log.info("返回头:{}", response.getHeaders());
         }

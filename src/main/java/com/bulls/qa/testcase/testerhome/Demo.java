@@ -2,6 +2,7 @@ package com.bulls.qa.testcase.testerhome;
 
 import com.bulls.qa.configuration.SConfig;
 import com.bulls.qa.request.Request;
+import com.bulls.qa.service.CustomListener;
 import com.bulls.qa.util.ExcelUtils;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
@@ -12,6 +13,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -26,11 +28,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 @ContextConfiguration(classes = SConfig.class)
+@Listeners(CustomListener.class)
 public class Demo extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = true, description = "取消收藏商品")
     public void test() {
-        logger.info("test start");
+        log.info("test start");
         //请求实例1
         Request request = Request.getInstance("topics");
         //请求1发送

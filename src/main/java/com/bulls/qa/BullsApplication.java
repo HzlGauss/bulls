@@ -11,16 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.starblink.qa.*"})
+@ComponentScan(basePackages = {"com.bulls.qa.*"})
 public class BullsApplication {
 
-    //@Autowired
-    //RequestConfigs requests;
-
-
     public static void main(String[] args) throws Exception {
-        //ConfigurableApplicationContext context = SpringApplication.run(QuantumApplication.class, args);
-        //context.getBean(QuantumApplication.class).test();
+
         boolean sendNotice = false;
         if (args != null && args.length > 0) {
             for (String arg : args) {
@@ -31,6 +26,7 @@ public class BullsApplication {
             }
         }
         TestNG testNG = new TestNG();
+        testNG.setUseDefaultListeners(false);
         List<XmlSuite> suites = new ArrayList<XmlSuite>();
         suites = (List<XmlSuite>) new Parser(BullsApplication.class.getClassLoader().getResourceAsStream("testng-case.xml")).parse();
         testNG.setXmlSuites(suites);

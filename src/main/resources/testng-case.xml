@@ -1,16 +1,13 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite verbose="10" name="starblink-test">
+<suite verbose="1" name="bulls-test" >
     <listeners>
-        <listener class-name="com.bulls.qa.service.TestListener"></listener>
-        <!--<listener class-name="io.qameta.allure.testng.AllureTestNg"/>-->
-        <!--<listener class-name="org.uncommons.reportng.JUnitXMLReporter"/>-->
+        <listener class-name="com.bulls.qa.service.CustomListener"></listener>
     </listeners>
     <test name="bulls自动化" preserve-order="true">
         <parameter name="reruntimes" value="0"></parameter>
         <packages>
         </packages>
         <classes>
-            <class name="com.bulls.qa.testcase.klarna.Demo"></class>
             <class name="com.bulls.qa.testcase.testerhome.Demo"></class>
         </classes>
     </test>

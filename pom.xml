@@ -11,9 +11,8 @@
     <groupId>com.starblink.qa</groupId>
     <artifactId>bulls</artifactId>
     <version>0.6-SNAPSHOT</version>
-    <name>quantum</name>
+    <name>bulls</name>
     <description>接口自动化</description>
-
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -27,17 +26,10 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -62,11 +54,6 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>xml-path</artifactId>
             <version>4.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -128,22 +115,10 @@
             <artifactId>commons-dbcp2</artifactId>
             <version>2.2.0</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-testng</artifactId>
-            <version>2.13.3</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.71</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>3.6.2.Final</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -157,11 +132,6 @@
         </dependency>
     </dependencies>
     <build>
-        <!--<resources>
-            <resource>
-                <directory>src/resources</directory>
-            </resource>
-        </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -188,14 +158,4 @@
             </properties>
         </profile>
     </profiles>
-    <repositories>
-        <repository>
-            <id>public</id>
-            <name>aliyun nexus</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
 </project>

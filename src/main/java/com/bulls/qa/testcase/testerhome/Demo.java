@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Listeners(CustomListener.class)
 public class Demo extends AbstractTestNGSpringContextTests {
 
-    @Test(enabled = true, description = "取消收藏商品")
+    @Test(enabled = true, description = "流量文字→点赞")
     public void test() {
         log.info("test start");
         //请求实例1
@@ -58,31 +58,15 @@ public class Demo extends AbstractTestNGSpringContextTests {
     }
 
     //参数化实例1
-    @Test(enabled = true, description = "取消收藏商品", dataProvider = "idList")
+    @Test(enabled = true, description = "参数化demo,方法", dataProvider = "idList")
     public void dataProviderTest(String id, int type) {
-        Request request = Request.getInstance("collectionProduct");
-        request.setParameter("id", id);
-        request.setParameter("type", type);
-        Response response = request.doRequest();
-        //response.prettyPrint();
-        request = Request.getInstance("cancelCollectionProduct");
-        response = request.doRequest();
-        //response.prettyPrint();
+        log.info("id:{},type:{}",id,type);
     }
 
     //参数化实例2
-    @Test(enabled = true, description = "取消收藏商品", dataProvider = "ids")
+    @Test(enabled = true, description = "参数化demo,excel", dataProvider = "ids")
     public void dataProviderTest2(String id, String type) {
-        Request request = Request.getInstance("collectionProduct");
-        //request.setParameter("id", id);
-        //request.setParameter("type", type);
-        request.setParameter("id", id).setParameter("type", type);
-        Response response = request.doRequest();
-
-        response.prettyPrint();
-        request = Request.getInstance("cancelCollectionProduct");
-        response = request.doRequest();
-        response.prettyPrint();
+        log.info("id:{},type:{}",id,type);
     }
 
     @DataProvider(name = "idList")

@@ -5,7 +5,7 @@ api:
     - name: testerhome登录
       id: testerhomeLogin
       priority: 1
-      path: https://testerhome.com/account/sign_in
+      path: https://$testerhomeHost/account/sign_in
       method: post
       headers: >-
         \{"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8","User-Agent":"$UA","x-requested-with":"XMLHttpRequest",
@@ -16,13 +16,13 @@ api:
   requests:
     - name: 读帖子
       id:  topics
-      path: https://testerhome.com/topics/38484
+      path: https://$testerhomeHost/topics/38484
       method: get
       headers: >-
         \{"User-Agent":"$UA","Content-Type":"application/x-www-form-urlencoded","cookie":"$token","x-requested-with":"XMLHttpRequest","x-csrf-token":"r3E8899sEAEnqST2dmtIEluqG5C/nL/Rwp2l4ITtNDU3XpF4eULhClMRoWweMt6XWSmBn2H8fmPRas+CVkA/BA=="\}
     - name: 点赞
       id:  likes
-      path: https://testerhome.com/likes
+      path: https://$testerhomeHost/likes
       method: post
       headers: >-
         \{"User-Agent":"$UA","Content-Type":"application/x-www-form-urlencoded","cookie":"$token","x-requested-with":"XMLHttpRequest","x-csrf-token":"r3E8899sEAEnqST2dmtIEluqG5C/nL/Rwp2l4ITtNDU3XpF4eULhClMRoWweMt6XWSmBn2H8fmPRas+CVkA/BA=="\}

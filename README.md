@@ -78,3 +78,4 @@ api:
     }
 ```
 ### 测试报告
+<img width="1412" alt="image" src="https://github.com/HzlGauss/bulls/assets/153802888/9a33b458-bc15-42f0-8e29-c8a0207cf6fd">

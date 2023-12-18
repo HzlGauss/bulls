@@ -7,6 +7,8 @@
 - 框架同样支持环境、各类账号以及其它测试物料信息维护
 - 上手快，java小白也能在半小时内学会使用
 ## 上手指南
+### 工程结构说明
+
 下面是一个论坛登录、浏览帖子、帖子点赞这样一个简单的业务场景进行举例，如何用框架完成这一几步操作的
 ### 定义http接口
 接口定义是在yml文件中，建议按照被测系统维护yml文件
@@ -45,7 +47,8 @@ api:
 - globalVariables:定义全局变量，为key、value形式
 - pioneers定义前置接口，用于定义登录等前置接口。程序启动后、用例开始执行前，会自动先执行pioneers中定义的接口。
   其中name随意起;id要唯一，建议按照接口请求地址的缩写命名id属性;priority,整数类型，当pioneers中定义了多个接口，执行时会按照priority属性排序，之后顺序执行。extractors：接口返回内容的提取，name,为提取的变量命名，后面接口可以通过$name名对其进行引用；value,变量的提取内容，支持提取cookie或返回json字符串中的某个属性(填写属性的json path)
-- requests定义接口，基本同pioneers部分，少了extractors部分
+- requests定义接口，基本同pioneers部分，少了extractors部分。
+**说明**：此处的接口请求参数可以通过抓包工具抓包获取，然后复制到这里。接口定义只定义一次，然后在用例中随意获取，使用接口时，根据需要设置请求参数，未设置的请求参数按照此处定义的值作为默认值。
 ### 用例代码：
 ```
     @Test(enabled = true, description = "打开帖子详情页→点赞")
@@ -78,4 +81,5 @@ api:
     }
 ```
 ### 测试报告
+如下图，用例相关接口的请求信息、返回信息也都由框架自动记录在了报告中
 <img width="1412" alt="image" src="https://github.com/HzlGauss/bulls/assets/153802888/9a33b458-bc15-42f0-8e29-c8a0207cf6fd">

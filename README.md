@@ -9,7 +9,9 @@
 ## 上手指南
 ### 工程结构说明
 ![image](https://github.com/HzlGauss/bulls/assets/153802888/acd67a16-077b-48e1-ae73-47327d890db5)
-下面是一个论坛登录、浏览帖子、帖子点赞这样一个简单的业务场景进行举例，如何用框架完成这一几步操作的
+
+**下面是一个论坛登录、浏览帖子、帖子点赞这样一个简单的业务场景进行举例，如何用框架完成这一几步操作的**
+
 ### 定义http接口
 接口定义是在yml文件中，建议按照被测系统维护yml文件
 ```
@@ -81,5 +83,21 @@ api:
     }
 ```
 ### 测试报告
-如下图，用例相关接口的请求信息、返回信息也都由框架自动记录在了报告中
+如下图，用例相关接口的请求信息、返回信息也都由框架自动记录在了报告中,如有其它需要内容输出到测试报告，可以在用例中添加Report.log("要添加内容");
 <img width="1412" alt="image" src="https://github.com/HzlGauss/bulls/assets/153802888/9a33b458-bc15-42f0-8e29-c8a0207cf6fd">
+### 其它
+**配置**:如其它spring工程，配置文件在resources目录下，类似pre、test区分不同环境，application.properties中定义一般的配置信息（和环境无光），其中pring.profiles.active=pre来切换不同环境
+
+**测试范围定义：**测试用例由testng维护，如框架中所示，详细使用方法参见 [testng官网](https://testng.org/doc/documentation-main.html#testng-xml)
+
+**运行**:，项目入口com.bulls.qa.BullsApplication.main
+
+```agsl
+//打包
+mvn clean -DskipTests=true  package
+//运行
+java -jar target/bulls-0.6-SNAPSHOT.jar  测试范围配置文件.xml  
+```
+如上面例子，测试范围配置文件可以配置多个，执行时指定测试范围，如不指定默认使用打包的程序代码中的测试范围配置文件
+
+**测试报告**:测试报道为单html文件，方便jenkins配置展示；

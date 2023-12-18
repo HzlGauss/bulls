@@ -7,6 +7,8 @@ import org.testng.TestNG;
 import org.testng.xml.Parser;
 import org.testng.xml.XmlSuite;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,20 +17,19 @@ import java.util.List;
 public class BullsApplication {
 
     public static void main(String[] args) throws Exception {
-
-        boolean sendNotice = false;
+        InputStream casesXmlPath=BullsApplication.class.getClassLoader().getResourceAsStream("testng-case.xml");
         if (args != null && args.length > 0) {
             for (String arg : args) {
-                if (StringUtils.isNotEmpty(arg) && arg.equalsIgnoreCase("sendNotice=true")) {
-                    System.out.println("=========sendNotice=true========");
-                    System.setProperty("sendNotice", "true");
+                if (StringUtils.isNotEmpty(arg) && arg.endsWith(".xml")) {
+                    casesXmlPath=new FileInputStream(arg);
                 }
             }
         }
         TestNG testNG = new TestNG();
         testNG.setUseDefaultListeners(false);
         List<XmlSuite> suites = new ArrayList<XmlSuite>();
-        suites = (List<XmlSuite>) new Parser(BullsApplication.class.getClassLoader().getResourceAsStream("testng-case.xml")).parse();
+        suites = (List<XmlSuite>) new Parser(casesXmlPath).parse();
+        //
         testNG.setXmlSuites(suites);
         testNG.run();
     }

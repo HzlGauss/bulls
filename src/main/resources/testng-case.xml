@@ -8,7 +8,11 @@
         <packages>
         </packages>
         <classes>
-            <class name="com.bulls.qa.testcase.testerhome.Demo"></class>
+            <class name="com.bulls.qa.testcase.testerhome.Demo">
+                <methods>
+                    <include name="test"></include>
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>

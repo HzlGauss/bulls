@@ -62,6 +62,13 @@ public class Demo extends AbstractTestNGSpringContextTests {
     //参数化实例1
     @Test(enabled = true, description = "参数化demo,方法", dataProvider = "idList")
     public void dataProviderTest(String id, int type) {
+        //请求实例1
+        Request request = Request.getInstance("testerhomeLogin");
+        request.setParameter("user[login]","");
+        request.setParameter("user[password]","");
+        //请求1发送
+        Response response = request.doRequest();
+
         log.info("id:{},type:{}",id,type);
         assertThat(1+1>2).isTrue().as("断言失败举例");
     }

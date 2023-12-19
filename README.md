@@ -8,6 +8,7 @@
 - 上手快，java小白也能在半小时内学会使用
 
 技术栈
+![image](https://github.com/HzlGauss/bulls/assets/153802888/b38aa2ee-00b7-4f22-956e-9ab207f16078)
 
 ## 上手指南
 ### 工程结构说明

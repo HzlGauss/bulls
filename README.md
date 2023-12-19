@@ -92,9 +92,9 @@ api:
 ### 其它
 **配置**:如其它spring工程，配置文件在resources目录下，类似pre、test区分不同环境，application.properties中定义一般的配置信息（和环境无光），其中pring.profiles.active=pre来切换不同环境
 
-**测试范围定义：**测试用例由testng维护，如框架中所示，详细使用方法参见 [testng官网](https://testng.org/doc/documentation-main.html#testng-xml)
+**测试范围定义**:测试用例由testng维护，如框架中所示，详细使用方法参见 [testng官网](https://testng.org/doc/documentation-main.html#testng-xml)
 
-**运行**:，项目入口com.bulls.qa.BullsApplication.main
+**运行**:项目入口com.bulls.qa.BullsApplication.main
 
 ```
 //打包
@@ -104,4 +104,4 @@ java -jar target/bulls-0.6-SNAPSHOT.jar  测试范围配置文件.xml
 ```
 如上面例子，测试范围配置文件可以配置多个，执行时指定测试范围，如不指定默认使用打包的程序代码中的测试范围配置文件
 
-**测试报告**:测试报道为单html文件，方便jenkins配置展示,报告地址运行时所在目录下bulls.html；
+**测试报告**:测试报道为单html文件，方便jenkins配置展示,报告地址运行时所在目录下bulls.html

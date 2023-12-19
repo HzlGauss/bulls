@@ -1,11 +1,12 @@
 # 框架介绍与上手指南
+**这是一个成熟的框架**，不是要让别人当小白鼠，它已经先后在两家公司的5条业务线进行了推广应用，用例条数到了几千条以上，并且从18年开始每天都在CI/CD流程中被调用运行。
 ## 框架介绍
-接口自动化测试是测试提效最为行之有效的方案，市面上的接口自动化测试框架很多，而本框架与其它框架的区别是：
+接口自动化测试无疑是测试提效最为行之有效的方案，市面上的接口自动化测试框架很众多，而本框架与其它框架的区别如以下：
 - 用例代码编写简单，让使用者精力集中在所测试系统的业务逻辑上，而http接口的定义，请求的发送，测试报告信息等都由框架完成
 - 不只适用于单个接口的测试，同样适用于多个接口组成的完整的业务逻辑的测试，这往往是接口自动化测试更应该做到的
 - 登录等前置的业务操作也由框架完成，用例中只需引用相应cookie
 - 框架同样支持环境、各类账号以及其它测试物料信息维护
-- 上手快，java小白也能在半小时内学会使用
+- 简单易用，java小白也能在半小时内学会使用
 
 技术栈
 ![image](https://github.com/HzlGauss/bulls/assets/153802888/b38aa2ee-00b7-4f22-956e-9ab207f16078)
@@ -54,7 +55,7 @@ api:
 - pioneers定义前置接口，用于定义登录等前置接口。程序启动后、用例开始执行前，会自动先执行pioneers中定义的接口。
   其中name随意起;id要唯一，建议按照接口请求地址的缩写命名id属性;priority,整数类型，当pioneers中定义了多个接口，执行时会按照priority属性排序，之后顺序执行。extractors：接口返回内容的提取，name,为提取的变量命名，后面接口可以通过$name名对其进行引用；value,变量的提取内容，支持提取cookie或返回json字符串中的某个属性(填写属性的json path)
 - requests定义接口，基本同pioneers部分，少了extractors部分。
-**说明**：此处的接口请求参数可以通过抓包工具抓包获取，然后复制到这里。接口定义只定义一次，然后在用例中随意获取，使用接口时，根据需要设置请求参数，未设置的请求参数按照此处定义的值作为默认值。
+**说明**：此处的接口请求参数可以通过抓包工具抓包获取，然后复制到这里。接口定义只需定义一次，在用例中随意获取，使用接口时，根据需要设置请求参数，未设置的请求参数按照此处定义的值作为默认值。
 ### 用例代码：
 ```
     @Test(enabled = true, description = "打开帖子详情页→点赞")
@@ -90,11 +91,11 @@ api:
 如下图，用例相关接口的请求信息、返回信息也都由框架自动记录在了报告中,如有其它需要内容输出到测试报告，可以在用例中添加Report.log("要添加内容");
 <img width="1412" alt="image" src="https://github.com/HzlGauss/bulls/assets/153802888/9a33b458-bc15-42f0-8e29-c8a0207cf6fd">
 ### 其它
-**配置**:如其它spring工程，配置文件在resources目录下，类似pre、test区分不同环境，application.properties中定义一般的配置信息（和环境无光），其中pring.profiles.active=pre来切换不同环境
+- **配置**:如其它spring工程，配置文件在resources目录下，类似pre、test区分不同环境，application.properties中定义一般的配置信息（和环境无光），其中pring.profiles.active=pre来切换不同环境
 
-**测试范围定义**:测试用例由testng维护，如框架中所示，详细使用方法参见 [testng官网](https://testng.org/doc/documentation-main.html#testng-xml)
+- **测试范围定义**:测试用例由testng维护，如框架中所示，详细使用方法参见 [testng官网](https://testng.org/doc/documentation-main.html#testng-xml)
 
-**运行**:项目入口com.bulls.qa.BullsApplication.main
+- **运行**:项目入口com.bulls.qa.BullsApplication.main
 
 ```
 //打包
@@ -104,4 +105,5 @@ java -jar target/bulls-0.6-SNAPSHOT.jar  测试范围配置文件.xml
 ```
 如上面例子，测试范围配置文件可以配置多个，执行时指定测试范围，如不指定默认使用打包的程序代码中的测试范围配置文件
 
-**测试报告**:测试报道为单html文件，方便jenkins配置展示,报告地址运行时所在目录下bulls.html
+- **测试报告**:测试报道为单html文件，方便jenkins配置展示,报告地址运行时所在目录下bulls.html
+- **断言**，选用的断言框架为AssertJ，AssertJ的强大无需赘述，详细使用方法参见 [AssertJ官网](https://assertj.github.io/doc/)

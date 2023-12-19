@@ -2,6 +2,7 @@
 <suite verbose="1" name="bulls-test" >
     <listeners>
         <listener class-name="com.bulls.qa.service.CustomListener"></listener>
+        <listener class-name="com.bulls.qa.service.NoticeListener"></listener>
     </listeners>
     <test name="bulls自动化" preserve-order="true">
         <parameter name="reruntimes" value="0"></parameter>

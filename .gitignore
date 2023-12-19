@@ -4,6 +4,7 @@ target/
 mvnw
 mvnw.cmd
 *.html
+*.zip
 !bulls_resport_demo.html
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**

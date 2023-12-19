@@ -107,3 +107,11 @@ java -jar target/bulls-0.6-SNAPSHOT.jar  测试范围配置文件.xml
 
 - **测试报告**:测试报道为单html文件，方便jenkins配置展示,报告地址运行时所在目录下bulls.html
 - **断言**，选用的断言框架为AssertJ，AssertJ的强大无需赘述，详细使用方法参见 [AssertJ官网](https://assertj.github.io/doc/)
+```
+assertThat(response.jsonPath().getList("recommendations")).size().isGreaterThan(0).as("recommendations长度大于0");
+assertThat(response.jsonPath().getBoolean("has_more")).isTrue().as("has_more为true");
+assertThat(response.jsonPath().getList("recommendations")).as("recommendations长度大于0").size().isEqualTo(3);
+List<String> types = JsonPath.from(response.asString()).getList("recommendations.item_type");
+String[] strs = "product,product-ad-card,deal,ad,shopping-curated-collection,auto-generated-collection,video,campaign-banner,benefit,web-view".split(",");
+assertThat(strs).containsAll(types).as("types在枚举范围内");
+```

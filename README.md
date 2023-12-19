@@ -136,6 +136,7 @@ assertThat(strs).containsAll(types).as("types在枚举范围内");
 ```
 - **发送测试结果消息通知**，参见代码NoticeListener，具体根据需要自行扩展
 - **接口传参设置**，较复杂的接口参数设置
+
 相关接口定义
 ```
     - name: 编辑商品

@@ -94,7 +94,27 @@ api:
 - **配置**:如其它spring工程，配置文件在resources目录下，类似pre、test区分不同环境，application.properties中定义一般的配置信息（和环境无光），其中pring.profiles.active=pre来切换不同环境
 
 - **测试范围定义**:测试用例由testng维护，如框架中所示，详细使用方法参见 [testng官网](https://testng.org/doc/documentation-main.html#testng-xml)
-
+```
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite verbose="1" name="bulls-test" >
+    <listeners>
+        <listener class-name="com.bulls.qa.service.CustomListener"></listener>
+        <listener class-name="com.bulls.qa.service.NoticeListener"></listener>
+    </listeners>
+    <test name="bulls自动化" preserve-order="true">
+        <parameter name="reruntimes" value="0"></parameter>
+        <packages>
+        </packages>
+        <classes>
+            <class name="com.bulls.qa.testcase.testerhome.Demo">
+                <methods>
+                    <include name="test"></include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+```
 - **运行**:项目入口com.bulls.qa.BullsApplication.main
 
 ```
@@ -104,7 +124,6 @@ mvn clean -DskipTests=true  package
 java -jar target/bulls-0.6-SNAPSHOT.jar  测试范围配置文件.xml  
 ```
 如上面例子，测试范围配置文件可以配置多个，执行时指定测试范围，如不指定默认使用打包的程序代码中的测试范围配置文件
-
 - **测试报告**:测试报道为单html文件，方便jenkins配置展示,报告地址运行时所在目录下bulls.html
 - **断言**，选用的断言框架为AssertJ，AssertJ的强大无需赘述，详细使用方法参见 [AssertJ官网](https://assertj.github.io/doc/)
 ```
@@ -114,4 +133,67 @@ assertThat(response.jsonPath().getList("recommendations")).as("recommendations�
 List<String> types = JsonPath.from(response.asString()).getList("recommendations.item_type");
 String[] strs = "product,product-ad-card,deal,ad,shopping-curated-collection,auto-generated-collection,video,campaign-banner,benefit,web-view".split(",");
 assertThat(strs).containsAll(types).as("types在枚举范围内");
+```
+- **发送测试结果消息通知**，参见代码NoticeListener，具体根据需要自行扩展
+- **接口传参设置**，较复杂的接口参数设置
+相关接口定义
+```
+    - name: 编辑商品
+      id: itemEdit
+      path: http://$mnghost/item/edit
+      method: post
+      cookies: $XXXXXXCookies
+      headers: >-
+        \{"User-Agent":"$UA","Content-Type": "application/json"\}
+      parameters: >-
+        \{"itemId":"2904"\}
+    - name: 添加商品
+      id: itemSave
+      path: http://$mnghost/item/save
+      method: post
+      cookies: $XXXCookies
+      headers: >-
+        \{"User-Agent":"$UA","Content-Type": "application/json"\}
+      parameters: >-
+        \{"itemId":"2913","categoryIdList":[1],"topCategoryName":"美食","itemName":"autoTest goods","limitNumber":3,
+        "priceText":"","countDownCycle":"3","countDownLimit":"1","itemNo":"12sqw","delivery":"MANUAL",
+        "image":"//yun.XXXXXX.com/images/202005/4su03vvahd.jpg","detail":"","itemStatus":"ON","skuProperties":[],
+        "skuList":[{"id":3375,"stock":999999,"stockId":null,"sellingPrice":100,"originalPrice":100,"costPrice":100,
+        "realPayPrice":100,"properties":null,"skuNo":"1","skuEnable":true,"changeStock":0}],"supportCOD":true,
+        "originItemId":null,"merchantId":73,"tagIds":[],"id":2913,"topCategoryId":1,"itemShortName":"autoTest goo","url":null,
+        "minPrice":100,"stock":0,"isRecommend":false,"minSkuOriginalPrice":null,"minSkuPriceDiff":null,"maxPriceDiff":null,
+        "maxPriceDiffPrice":null,"maxPriceDiffOriginalPrice":null,"gmtModified":"2020-06-19 16:57:36","gmtModifyName":"测试专用",
+        "gmtModifyEmail":"test@XXXXXX.com.cn","mainRecomIds":null,"merchantName":"autoTestShop01","merchantDelivery":"MANUAL",
+        "imgHeight":[{"imgUrl":"http://yun.XXXXXX.com/images/202006/mj3yg07pj8.jpg","height":136},
+        {"imgUrl":"http://yun.XXXXXX.com/images/202006/d47ad68hhc.jpg","height":372}],"mainImgUrl":null,"itemIntroduce":null,
+        "saleLableUrl":null,"ssoDesc":null\}
+```
+相关代码
+```
+        goodsId = 2904;
+        //编辑接口，获取测试的商品信息
+        Request request = Request.getInstance("itemEdit");
+        //直接设置，key-value形式
+        Response response = request.setParameter("itemId", goodsId).doRequest();
+        //库存小于50，更新库存
+        JsonPath jsonPath = response.jsonPath();
+        if (jsonPath.getBoolean("success") && jsonPath.getInt("data.stock") >= 50) {
+            // dosomething
+        }
+        Map<String, Object> map = response.jsonPath().getMap("data");
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        map.put("itemId", goodsId);
+        map.put("stock", 9999999);
+        request = Request.getInstance("itemSave");
+        //遍历接口的传参结构定义，替换掉key完全匹配的那个map部分
+        request.setParameters(map);
+        //按照json path定位要设置的key
+        request.setParameter("$.skuList[0].stock", 9999999);
+        request.setParameter("$.skuList[0].changeStock", null);
+        //根据路径删除，路径按json path
+        request.removeParameterByPath("$.skuList[0].stockId");
+        request.removeParameterByPath("$.skuList[0].id");
+        request.doRequest();
 ```

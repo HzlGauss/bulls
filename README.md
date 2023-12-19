@@ -198,3 +198,4 @@ assertThat(strs).containsAll(types).as("types在枚举范围内");
         request.removeParameterByPath("$.skuList[0].id");
         request.doRequest();
 ```
+- **详尽的json-path使用方法**，参见 [JsonPath使用](https://www.javadoc.io/doc/io.rest-assured/json-path/latest/io/restassured/path/json/JsonPath.html)**

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.bulls.qa.configuration.RequestConfig;
 import com.bulls.qa.service.PioneerService;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
@@ -42,7 +43,8 @@ public class Request {
     private String filePath;
     private Map<String, Object> headers;
     private Map<String, String> cookies = new HashMap<>();
-    private Map<String, Object> parameter;
+    //private Map<String, Object> parameter;
+    private Object parameter;
     private Map<String, Object> tmpParameter = new HashMap<>();
     //private static final Logger logger = LoggerFactory.getLogger(RequestConfig.class);
     //private static final Logger logger= LogManager.getLogger(Request.class);
@@ -193,11 +195,18 @@ public class Request {
     private void initParameter() throws IOException {
         ObjectMapper MAPPER = new ObjectMapper();
         if (StringUtils.isNotEmpty(requestConfig.getParameters())) {
-            String s = requestConfig.getParameters().replace("\\", "").trim();
-            HashMap<String, Object> parameters = null;
+            //String s = requestConfig.getParameters().replace("\\", "").trim();
+            String s = requestConfig.getParameters();
             if (s.startsWith("{") && s.endsWith("}")) {
-                parameters = MAPPER.readValue(s, HashMap.class);
+                Map<String, Object> parameters = null;
+                parameters = MAPPER.readValue(s, Map.class);
+                this.parameter = parameters;
+            } else if (s.startsWith("[") && s.endsWith("]")) {
+                CollectionType listType = MAPPER.getTypeFactory().constructCollectionType(ArrayList.class, Map.class);
+                List<Map> list = MAPPER.readValue(s, listType);
+                this.parameter = list;
             } else {
+                HashMap<String, Object> parameters = null;
                 parameters = new HashMap<>();
                 String[] ss = s.split("[=&]");
                 int len = ss.length;
@@ -212,8 +221,9 @@ public class Request {
                     }
 
                 }
+                this.parameter = parameters;
             }
-            this.parameter = parameters;
+
         } else {
             this.parameter = new HashMap<>();
         }
@@ -266,7 +276,7 @@ public class Request {
                 Object value = this.headers.get(key);
                 if (value instanceof String) {
                     String s1 = (String) value;
-                    if (StringUtils.isNotEmpty(s1) && s.startsWith("$")) {
+                    if (StringUtils.isNotEmpty(s1) && s1.startsWith("$")) {
                         String v = (String) requestConfigs.getGlobalVariable(s1.replace("$", ""));
                         if (StringUtils.isNotEmpty(v)) {
                             this.headers.put(key, v);
@@ -276,8 +286,17 @@ public class Request {
             }
         }
         //parameter
-        if (this.parameter != null && this.parameter.size() > 0) {
-            mapReplace(this.parameter);
+        if (this.parameter != null) {
+            if ((this.parameter instanceof java.util.Map) && !((Map) this.parameter).isEmpty()) {
+                mapReplace((Map) this.parameter);
+            } else if (this.parameter instanceof java.util.List) {
+                List list = (List) this.parameter;
+                for (Object o : list) {
+                    if (o instanceof Map) {
+                        mapReplace((Map<String, Object>) o);
+                    }
+                }
+            }
         }
     }
 
@@ -450,11 +469,18 @@ public class Request {
             request = request.contentType(type);
         }
 
-        if (this.parameter != null && this.parameter.size() > 0) {
+
+        if (this.parameter != null) {
             if (contentType.equals(ContentType.JSON)) {
                 request = request.body(this.parameter);
             } else {
-                request = request.params(this.parameter);
+                if (this.parameter instanceof Map) {
+                    request = request.formParams((Map) this.parameter);
+                    //request = request.params((Map) this.parameter);
+                } else if (this.parameter instanceof String) {
+                    request = request.formParam((String) this.parameter);
+                }
+
             }
         }
         String requestInfo = String.format("[接口请求信息] id:%s,name:%s,url:%s", requestConfig.getId(),
@@ -467,7 +493,7 @@ public class Request {
         if (this.cookies != null) {
             logger.info("请求cookies:{}", this.cookies);
         }
-        if (this.parameter != null && this.parameter.size() > 0) {
+        if (this.parameter != null) {
             logger.info("请求参数:{}", this.parameter);
             Reporter.log("请求参数:" + this.parameter);
         }
@@ -584,24 +610,64 @@ public class Request {
     }
 
     public Request setParameter(String name, Object value) {
+        if (name.startsWith("$.") || name.startsWith("$[")) {
+            this.setParameterByPath(name, value);
+            return this;
+        }
         this.tmpParameter.put(name, value);
         this.setParameters(this.tmpParameter);
         return this;
     }
 
-    //根据路径删除，路径按json path
     public Request removeParameterByPath(String path) {
-        if (!path.trim().startsWith("$.")) {
+        if (!path.trim().startsWith("$.") || !path.trim().startsWith("$[")) {
             logger.error("删除参数失败！参数路径格式错误!{}", path);
             return this;
         }
-        Object map = this.parameter;
+        if (this.parameter == null) {
+            logger.error("删除参数失败！parameter属性为null");
+            return this;
+        }
+        return this.removeParameterByPath(path, this.parameter);
+    }
+
+    //根据路径删除，路径按json path
+    //todo
+    private Request removeParameterByPath(String path, Object map) {
+        //Object map = null;
+        if (map instanceof java.util.List) {
+            if (path.trim().startsWith("$[")) {
+                String[] ts = path.split("\\.");
+                String t = ts[0].replace("$[", "").replace("]", "");
+                int i = Integer.valueOf(t);
+                if (((List) map).size() > i) {
+                    //path已经到末尾
+                    if (ts.length == 1) {
+                        ((List) map).remove(i);
+                        return this;
+                    } else {
+                        map = ((List) map).get(i);
+                        path = path.replace("$[" + i + "]", "$.");
+                        return this.removeParameterByPath(path, map);
+                    }
+                } else {
+                    logger.error("删除参数失败！通过该路径未能找到要删除参数！{}", path);
+                    return this;
+                }
+            } else {
+                logger.error("删除参数失败！通过该路径未能找到要删除参数！{}", path);
+                return this;
+            }
+        } else if (map instanceof java.util.Map) {
+            map = (Map) this.parameter;
+        }
+
         String[] ps = path.split("\\.");
         for (int i = 1; i < ps.length; i++) {
             String key = ps[i];
             if (key.contains("[") && key.endsWith("]")) {
                 String[] ss = key.split("[\\[,\\]]");
-                if (!((Map<String, Object>) map).containsKey(ss[0])) {
+                if (!((Map) map).containsKey(ss[0])) {
                     logger.error("删除参数失败！通过该路径未能找到要删除参数！{}", path);
                     return this;
                 }
@@ -634,20 +700,34 @@ public class Request {
         return this;
     }
 
+
     //根据路径设置，路径按json path
     private void setParameterByPath(String path, Object value) {
-        if (!path.trim().startsWith("$.")) {
+        if (!path.trim().startsWith("$.") && !path.trim().startsWith("$[")) {
             logger.error("设置参数失败！参数路径格式错误!{}", path);
             return;
         }
         Object map = this.parameter;
         String[] ps = path.split("\\.");
+        int index = -1;
+        if (path.trim().startsWith("$[")) {
+            String ts = ps[0].replace("$[", "").replace("]", "");
+            index = Integer.valueOf(ts);
+            if (map instanceof List) {
+                map = ((List) map).get(index);
+                path = path.replace(ps[0], "$");
+            } else {
+                logger.error("设置参数失败！通过该路径未能找到要替换参数！{}", path);
+                return;
+            }
+        }
         if (ps.length == 1) {
             if (map instanceof Map && value instanceof Map) {
                 ((Map) map).putAll((Map) value);
-            }
-            if (map instanceof List) {
-                ((List) map).add(value);
+                return;
+            } else if (map instanceof List) {
+                ((List) map).set(index, value);
+                return;
             }
         }
         for (int i = 1; i < ps.length; i++) {
@@ -698,16 +778,35 @@ public class Request {
         }
     }
 
-    public Request setParameters(Map<String, Object> parameters) {
+    public Request setParameters(Object object) {
+        if (object instanceof Map) {
+            return setParametersOfMap((Map<String, Object>)object);
+        } else if (object instanceof List) {
+            this.parameter = object;
+            return this;
+        }
+        return this;
+    }
+
+    private Request setParametersOfMap(Map<String, Object> parameters) {
         if (this.method.equals("get") || this.method.equals("delete")) {
             for (String key : parameters.keySet()) {
                 this.path = replaceOrAdd(this.path, key, parameters.get(key).toString());
             }
         } else {
-            if (this.parameter.size() == 0 || (!this.requestConfig.getParameters().trim().startsWith("{"))) {
-                this.parameter.putAll(parameters);
-            } else {
-                mapCrawl(this.parameter, parameters);
+            if (this.parameter != null && (this.parameter instanceof java.util.Map)) {
+                if (((Map) this.parameter).isEmpty() || (!this.requestConfig.getParameters().trim().startsWith("{"))) {
+                    ((Map) this.parameter).putAll(parameters);
+                } else {
+                    mapCrawl((Map) this.parameter, parameters);
+                }
+            } else if (this.parameter != null && (this.parameter instanceof List)) {
+
+                for (Object o : (List) this.parameter) {
+                    if (o instanceof Map) {
+                        mapCrawl((Map) o, parameters);
+                    }
+                }
             }
         }
         //logger.info(this.parameter.toString());

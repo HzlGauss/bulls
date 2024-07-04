@@ -10,6 +10,8 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 import io.restassured.spi.AuthFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -20,6 +22,7 @@ import java.util.*;
 
 @Service
 public class PioneerService {
+    private static final Logger log = LoggerFactory.getLogger(PioneerService.class);
     @Autowired
     private RequestConfigs requestConfigs;
     @Value("${miria.cookie:abc}")
@@ -83,6 +86,7 @@ public class PioneerService {
 
     @PostConstruct
     private void prepareAction() {
+        log.info("PionnerService prepareAction run!");
         //initRequest();
         PioneerService.staticEnv = this.env;
         if (Request.getRequestConfigs() == null) {

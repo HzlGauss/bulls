@@ -37,7 +37,12 @@ public class RequestConfig {
 
     public void setParameters(String parameters) {
         if (StringUtils.isNotEmpty(parameters.trim())) {
-            this.parameters = parameters.trim().replace("\\", "");
+            if(parameters.startsWith("r\\")){
+                this.parameters=parameters.substring(2, parameters.length());
+            }else {
+                this.parameters = parameters.trim().replace("\\", "");
+            }
+
         }
 
     }

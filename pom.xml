@@ -29,7 +29,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -87,7 +86,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.6</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -143,9 +142,9 @@
     </build>
     <profiles>
         <profile>
-            <id>auto</id>
+            <id>pre</id>
             <properties>
-                <environment>auto</environment>
+                <environment>pre</environment>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
